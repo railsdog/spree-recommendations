@@ -1,0 +1,6 @@
+---
+en-US:
+  new_recommendation_provider: New Recommendation Provider
+  recommendation_provider: Recommendation Provider
+  recommendation_providers: Recommendation Providers
+  recommendation_providers_description: Configure recommendation engines for different environments
