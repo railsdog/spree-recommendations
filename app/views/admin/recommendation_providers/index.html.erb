@@ -21,14 +21,14 @@
   </thead>
   <tbody>
     <% @recommendation_providers.each do |recommendation_provider| %>
-      <tr id="<%= dom_id method %>">
+      <tr id="<%= dom_id recommendation_provider %>">
         <td width="120px"><%= recommendation_provider.name %></td>
         <td width="140px"><%= recommendation_provider.type %></td>
         <td width="100px"><%= recommendation_provider.environment.to_s.titleize %></td>
         <td width="60px"><%= recommendation_provider.active ? t(:yes) : t(:no) %></td>
         <td width="140px">
-        	<%= link_to_edit method %> &nbsp;
-        	<%= link_to_delete method %>
+        	<%= link_to_edit recommendation_provider %> &nbsp;
+        	<%= link_to_delete recommendation_provider %>
         </td>
       </tr>
     <% end %>

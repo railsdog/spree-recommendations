@@ -14,5 +14,9 @@ class RecommendationsHooks < Spree::ThemeSupport::HookListener
     </tr>
     )
   end
-    
+
+  insert_after :admin_inside_head do
+    "<%= javascript_include_tag 'admin/recommendation_providers' %>"
+  end
+  
 end

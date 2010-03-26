@@ -13,10 +13,16 @@ class RecommendationsExtension < Spree::Extension
   # end
   
   def activate
-
-    # make your helper avaliable in all views
-    # Spree::BaseController.class_eval do
-    #   helper YourHelper
-    # end
+		#register all recommendation providers
+		[
+			RecommendationProvider::Bogus,
+			RecommendationProvider::Mahout
+    ].each{|rp|
+      begin
+        rp.register  
+      rescue Exception => e
+        $stderr.puts "Error registering recommendation provider #{rp}: #{e}"
+      end
+    }    
   end
 end

@@ -1,6 +1,9 @@
 ---
 en-US:
+  editing_recommendation_provider: Editing Recommendation Provider 
   new_recommendation_provider: New Recommendation Provider
   recommendation_provider: Recommendation Provider
   recommendation_providers: Recommendation Providers
   recommendation_providers_description: Configure recommendation engines for different environments
+  service_url: Service URL
+    

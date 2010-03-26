@@ -36,10 +36,13 @@
 
   <% unless @object.new_record? %>
  
-    <%= preference_fields(@object, f) %>
+    <div id="preference-fields">
+      <%= preference_fields(@object, f) %>
+    </div>
  
-    <% if @object.respond_to?(:preferences) %>
-      <div id="settings-warning" style="color:#FF0000"><%= t('provider_settings_warning')%></div>
+    <% unless @recommendation_provider.new_record? %>
+      <div id="settings-warning" style="color:#FF0000"> <%= t('provider_settings_warning')%></div>
       <% end %>
     <% end %>
- </div>
+
+</div>
