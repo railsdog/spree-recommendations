@@ -6,12 +6,6 @@ class RecommendationsExtension < Spree::Extension
   description "Describe your extension here"
   url "http://yourwebsite.com/recommendations"
 
-  # Please use recommendations/config/routes.rb instead for extension routes.
-
-  # def self.require_gems(config)
-  #   config.gem "gemname-goes-here", :version => '1.2.3'
-  # end
-  
   def activate
 		#register all recommendation providers
 		[
@@ -23,6 +17,20 @@ class RecommendationsExtension < Spree::Extension
       rescue Exception => e
         $stderr.puts "Error registering recommendation provider #{rp}: #{e}"
       end
-    }    
+    }
+    
+    
+    Product.class_eval do
+      def recommendations
+        RecommendationProvider.current.recommendations_for_products([self])
+      end
+    end
+
+    User.class_eval do
+      def recommendations
+        RecommendationProvider.current.recommendations_for_user(self)
+      end
+    end
+
   end
 end

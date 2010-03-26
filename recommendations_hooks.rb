@@ -19,4 +19,6 @@ class RecommendationsHooks < Spree::ThemeSupport::HookListener
     "<%= javascript_include_tag 'admin/recommendation_providers' %>"
   end
   
+  insert_after :product_taxons, 'products/recommendations'
+
 end

@@ -1,5 +1,3 @@
-require 'fastercsv'
-
 namespace :spree do
   namespace :extensions do
     namespace :recommendations do
@@ -90,6 +88,7 @@ namespace :spree do
         `cat /tmp/#{file_name} >> #{file_name}`          
 
       end
+
     end
   end
 end
