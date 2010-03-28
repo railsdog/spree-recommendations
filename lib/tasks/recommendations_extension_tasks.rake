@@ -15,8 +15,8 @@ namespace :spree do
         end
       end
       
-      desc "export customers in csv for Recoset"
-      task :export_customers => :environment do
+      desc "export data in csv for Recoset"
+      task :export => :environment do
         timestamp = Time.now.to_i.to_s
         
         puts "saving customers"
@@ -53,13 +53,26 @@ namespace :spree do
         
         
         puts "saving orders"
-        FasterCSV.open("orders.csv.#{timestamp}", "w") do |csv|
+        file_name = "orders.csv.#{timestamp}"
+        FasterCSV.open(file_name, "w") do |csv|
           csv <<  ["id", "customer_id", "date", "total_amount", "cc_type", "cc_expiry", "shipping_type"]
-          Order.all.each do |o|
-            cc = o.creditcards.first
-            csv << [o.id, o.user_id, o.created_at, o.total, (cc ? cc.cc_type : ''), o.checkout.shipping_method_id || '0']
-          end
         end
+        sql = <<-eos
+          COPY (
+          SELECT o.id, COALESCE(o.user_id, 0) as user_id, o.created_at as date, o.total,
+            COALESCE(cc.cc_type, '') as cc_type,
+            cc.year||'-'||cc.month||'-01' as cc_expiry,
+            COALESCE(c.shipping_method_id, 0) as shipping_type
+          FROM orders o
+          LEFT JOIN checkouts c ON (o.id = c.order_id)
+          LEFT JOIN payments p ON ((p.payable_id = c.id AND p.payable_type = 'Checkout') OR
+            (p.payable_id = o.id AND p.payable_type = 'Order'))
+          LEFT JOIN creditcards cc ON (cc.id = p.source_id AND p.source_type = 'Creditcard'))
+          TO '/tmp/#{file_name}' CSV;
+        eos
+        ActiveRecord::Base.connection.execute(sql)
+        `cat /tmp/#{file_name} >> #{file_name}`
+        
         
         puts "saving order line items"
         file_name = "purchased_items.csv.#{timestamp}"
