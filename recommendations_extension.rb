@@ -6,6 +6,10 @@ class RecommendationsExtension < Spree::Extension
   description "Describe your extension here"
   url "http://yourwebsite.com/recommendations"
 
+  def self.require_gems(config)
+    config.gem "httparty", :version => '0.5.2'
+  end
+
   def activate
 		#register all recommendation providers
 		[

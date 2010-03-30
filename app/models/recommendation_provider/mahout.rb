@@ -1,5 +1,4 @@
-class RecommendationProvider::Mahout < RecommendationProvider
+class RecommendationProvider::Mahout < RecommendationProvider::WebService
   
-  preference :service_url, :string
 
 end

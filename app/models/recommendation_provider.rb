@@ -33,6 +33,14 @@ class RecommendationProvider < ActiveRecord::Base
     def limit_scope
       Product.limit(preferred_recommended_product_count)
     end
+
+    def scope_from_product_ids(product_ids)
+      limit_scope.scoped(:conditions => ['products.id IN (?)', product_ids] )
+    end
     
+    # Scope that produces no results in case of failure to get recommendations
+    def empty_scope
+      scope_from_product_ids([])
+    end
 
 end
