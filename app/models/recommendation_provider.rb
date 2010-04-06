@@ -13,7 +13,7 @@ class RecommendationProvider < ActiveRecord::Base
   end
   
   named_scope :active, :conditions => {:active => true}
-  named_scope :for_current_env, :conditions => ["environment IS NULL OR environment == '' OR environment = ?", ENV['RAILS_ENV']]
+  named_scope :for_current_env, :conditions => ["environment IS NULL OR environment = '' OR environment = ?", ENV['RAILS_ENV']]
 
   def self.current
     @@current ||= active.for_current_env.first

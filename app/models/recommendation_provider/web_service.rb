@@ -28,7 +28,7 @@ class RecommendationProvider::WebService < RecommendationProvider
     end
 
     def product_recommendations_url(products)
-      "#{preferred_service_url}?productss=" + products.map(&:id).join(',')
+      "#{preferred_service_url}?products=" + products.map(&:id).join(',')
     end
       
     def user_recommendations_url(user)

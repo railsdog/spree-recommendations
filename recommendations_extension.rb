@@ -26,13 +26,13 @@ class RecommendationsExtension < Spree::Extension
     
     Product.class_eval do
       def recommendations
-        RecommendationProvider.current.recommendations_for_products([self])
+        @recommendations ||= RecommendationProvider.current.recommendations_for_products([self])
       end
     end
 
     User.class_eval do
       def recommendations
-        RecommendationProvider.current.recommendations_for_user(self)
+        @recommendations ||= RecommendationProvider.current.recommendations_for_user(self)
       end
     end
 
