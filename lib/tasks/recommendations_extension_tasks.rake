@@ -19,8 +19,8 @@ namespace :spree do
         
         puts "saving customers"
         file_name = "customers.csv.#{timestamp}"
-        FasterCSV.open(file_name, "w") do |csv|
-          csv << ['id', 'firstname', 'address', 'city', 'country', 'zipcode']
+        File.open(file_name, "w") do |f|
+          f.puts ['id', 'firstname', 'address', 'city', 'country', 'zipcode'].join(',')
         end
         sql = <<-eos
           COPY (
@@ -36,8 +36,8 @@ namespace :spree do
         
         puts "saving products"
         file_name = "products.csv.#{timestamp}"
-        FasterCSV.open(file_name, "w") do |csv|
-          csv << ["id", "master_product_id", "price", "name", "description"] # TODO: category/tags => taxon?
+        File.open(file_name, "w") do |f|
+          f.puts ["id", "master_product_id", "price", "name", "description"].join(',') # TODO: category/tags => taxon?
         end
         sql = <<-eos
           COPY (
@@ -52,8 +52,8 @@ namespace :spree do
         
         puts "saving orders"
         file_name = "orders.csv.#{timestamp}"
-        FasterCSV.open(file_name, "w") do |csv|
-          csv <<  ["id", "customer_id", "date", "total_amount", "cc_type", "cc_expiry", "shipping_type"]
+        File.open(file_name, "w") do |f|
+          f.puts ["id", "customer_id", "date", "total_amount", "cc_type", "cc_expiry", "shipping_type"].join(',')
         end
         sql = <<-eos
           COPY (
@@ -74,9 +74,9 @@ namespace :spree do
         
         puts "saving order line items"
         file_name = "purchased_items.csv.#{timestamp}"
-        FasterCSV.open(file_name, "w") do |csv|
+        File.open(file_name, "w") do |f|
           # nice to have: "discount_percentage", but adjustment is currently stored in orders rather than items.
-          csv << ["order_id", "product_id", "quantity", "amount"]
+          f.puts ["order_id", "product_id", "quantity", "amount"].join(',')
         end
         sql = <<-eos
           COPY (
