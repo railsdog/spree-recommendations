@@ -2,36 +2,40 @@ class Spree::CSV
 
   class << self
 
-    def export_customers(file_name, target_dir)
+    def export_customers(file_name, target_dir, start_date = nil)
       header_fields = ['id', 'firstname', 'address', 'city', 'country', 'zipcode']
+      start_date_clause = start_date ? "AND u.created_at >= '#{start_date.to_s(:db)}'" : ""
       sql = <<-eos
         COPY (
         SELECT u.id, a.firstname, a.address1 as address, a.city, c.iso as country, a.zipcode
         FROM users u
         LEFT JOIN addresses a ON (a.id = u.ship_address_id)
         LEFT JOIN countries c ON (c.id = a.country_id)
-        WHERE a.id IS NOT NULL)
+        WHERE a.id IS NOT NULL #{start_date_clause})
         TO '/tmp/#{file_name}' CSV;
       eos
       
       export(header_fields, sql, file_name, target_dir)
     end
 
-    def export_products(file_name, target_dir)
+    def export_products(file_name, target_dir, start_date = nil)
       header_fields = ["id", "master_product_id", "price", "name", "description"]
+      start_date_clause = start_date ? "WHERE p.created_at >= '#{start_date.to_s(:db)}'" : ""
       sql = <<-eos
         COPY (
         SELECT v.id, p.id as master_product_id, v.price, p.name, p.description
         FROM variants v
-        LEFT JOIN products p ON (p.id=v.product_id))
+        LEFT JOIN products p ON (p.id=v.product_id)
+        #{start_date_clause})
         TO '/tmp/#{file_name}' CSV;
       eos
       
       export(header_fields, sql, file_name, target_dir)
     end
 
-    def export_orders(file_name, target_dir)
+    def export_orders(file_name, target_dir, start_date = nil)
       header_fields = ["id", "customer_id", "date", "total_amount", "cc_type", "cc_expiry", "shipping_type"]
+      start_date_clause = start_date ? "WHERE o.created_at >= '#{start_date.to_s(:db)}'" : ""
       sql = <<-eos
         COPY (
         SELECT o.id, COALESCE(o.user_id, 0) as user_id, o.created_at as date, o.total,
@@ -42,19 +46,22 @@ class Spree::CSV
         LEFT JOIN checkouts c ON (o.id = c.order_id)
         LEFT JOIN payments p ON ((p.payable_id = c.id AND p.payable_type = 'Checkout') OR
           (p.payable_id = o.id AND p.payable_type = 'Order'))
-        LEFT JOIN creditcards cc ON (cc.id = p.source_id AND p.source_type = 'Creditcard'))
+        LEFT JOIN creditcards cc ON (cc.id = p.source_id AND p.source_type = 'Creditcard')
+        #{start_date_clause})
         TO '/tmp/#{file_name}' CSV;
       eos
       
       export(header_fields, sql, file_name, target_dir)
     end
 
-    def export_line_items(file_name, target_dir)
+    def export_line_items(file_name, target_dir, start_date = nil)
       header_fields = ["order_id", "product_id", "quantity", "amount"]
+      start_date_clause = start_date ? "WHERE created_at >= '#{start_date.to_s(:db)}'" : ""
       sql = <<-eos
         COPY (
         SELECT order_id, variant_id as product_id, quantity, price as amount 
-        FROM line_items)
+        FROM line_items
+        #{start_date_clause})
         TO '/tmp/#{file_name}' CSV;
       eos
       
