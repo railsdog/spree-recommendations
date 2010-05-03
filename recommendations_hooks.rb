@@ -21,4 +21,14 @@ class RecommendationsHooks < Spree::ThemeSupport::HookListener
   
   insert_after :product_taxons, 'products/recommendations'
 
+  insert_after :admin_product_tabs do
+    %(
+    <% if url_options_authenticate?(:controller => 'admin/products') %>
+      <li<%= ' class="active"' if current == "Recommendations" %>>
+        <%= link_to t("recommendations"), recommendations_admin_product_url(@product) %>
+      </li>
+    <% end %>
+    )
+  end
+  
 end

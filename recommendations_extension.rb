@@ -35,6 +35,12 @@ class RecommendationsExtension < Spree::Extension
         @recommendations ||= RecommendationProvider.current.recommendations_for_user(self)
       end
     end
+    
+    Admin::ProductsController.class_eval do
+      def recommendations        
+        load_object
+      end
+    end
 
   end
 end

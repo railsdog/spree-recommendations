@@ -1,0 +1,37 @@
+<%= render :partial => 'admin/shared/product_sub_menu' %>
+<%= render :partial => 'admin/shared/product_tabs', :locals => {:current => "Recommendations"} %>
+
+
+<h2><%= t('recommendations') %></h2>
+
+<% hook :admin_product_recommendations do %>
+<table class="index">
+  <tr>
+    <% hook :admin_products_index_headers do %>
+      <th><%= t("sku") %></th>
+      <th><%= t("name") %></th>
+    <% end %>
+    <th>
+      <%= hook :admin_products_index_header_actions %>
+    </th>
+  </tr>
+<% for product in @product.recommendations %>
+  <tr <%= 'style="color:red;"' if product.deleted? %> id="<%= dom_id product %>">
+    <%- locals = {:product => product} -%>
+    <% hook :admin_products_index_rows, locals do %>
+      <td><%= product.sku %></td>
+      <td><%= product.name %></td>
+    <% end %>
+    <td class="actions">
+      <% hook :admin_products_index_row_actions, locals do %>
+        <%= link_to_edit product unless product.deleted?  %>
+        &nbsp;
+        <%= link_to_clone product %>
+        &nbsp;
+        <%= link_to_delete product unless product.deleted?  %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>
+<% end %>
